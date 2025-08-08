@@ -1,0 +1,1 @@
+kubectl apply -f manager-deployment.yaml

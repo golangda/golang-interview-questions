@@ -1,0 +1,5 @@
+curl -X POST -H "Content-Type: application/json" -d '{"metadata":{"name":"sample-flow"},"spec":{"sources":["kafka-source"],"destinations":["kafka-destination"],"resources":{"cpu":"500m","memory":"256Mi"}}}' http://<manager-service-ip>/create
+
+curl -X PUT -H "Content-Type: application/json" -d '{"metadata":{"name":"sample-flow"},"spec":{"sources":["kafka-source-updated"],"destinations":["kafka-destination"],"resources":{"cpu":"1","memory":"512Mi"}}}' http://<manager-service-ip>/update
+
+curl -X DELETE http://<manager-service-ip>/delete?name=sample-flow
