@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apisvc
+  labels:
+    app: apisvc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: apisvc
+  template:
+    metadata:
+      labels:
+        app: apisvc
+    spec:
+      containers:
+      - name: apisvc
+        image: apisvc:local
+        ports:
+        - containerPort: 80
+        env:
+        - name: KAFKA_BROKER
+          value: kafka:9092
+        - name: MYSQL_DSN
+          value: "root:password@tcp(mysql:3306)/app"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: apisvc
+spec:
+  selector:
+    app: apisvc
+  ports:
+    - port: 80
+      targetPort: 80

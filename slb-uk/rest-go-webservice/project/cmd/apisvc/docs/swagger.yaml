@@ -1,0 +1,217 @@
+basePath: /v1
+definitions:
+  main.Ack:
+    properties:
+      error:
+        properties:
+          code:
+            type: string
+          detail:
+            type: string
+        type: object
+      event:
+        type: string
+      payload:
+        additionalProperties: {}
+        type: object
+      status:
+        type: string
+      trace_id:
+        type: string
+    type: object
+  main.acceptedResp:
+    properties:
+      status:
+        type: string
+      trace_id:
+        type: string
+    type: object
+  main.messageBody:
+    properties:
+      message:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@example.com
+    name: API Support
+    url: http://www.example.com/support
+  description: This is the API server for the distributed message service.
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://example.com/terms/
+  title: Message Service API
+  version: "1.0"
+paths:
+  /messages:
+    post:
+      consumes:
+      - application/json
+      description: Receives a message payload and publishes to Kafka
+      parameters:
+      - description: Message payload
+        in: body
+        name: message
+        required: true
+        schema:
+          $ref: '#/definitions/main.messageBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.acceptedResp'
+        "400":
+          description: invalid body
+          schema:
+            type: string
+      summary: Create a new message
+      tags:
+      - messages
+  /messages/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Message ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Message ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated message
+        in: body
+        name: message
+        required: true
+        schema:
+          $ref: '#/definitions/main.messageBody'
+      - description: Message ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Ack'
+        "204":
+          description: No Content
+      summary: Delete a message
+      tags:
+      - messages
+      - messages
+      - messages
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Message ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Message ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated message
+        in: body
+        name: message
+        required: true
+        schema:
+          $ref: '#/definitions/main.messageBody'
+      - description: Message ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Ack'
+        "204":
+          description: No Content
+      summary: Delete a message
+      tags:
+      - messages
+      - messages
+      - messages
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Message ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Message ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated message
+        in: body
+        name: message
+        required: true
+        schema:
+          $ref: '#/definitions/main.messageBody'
+      - description: Message ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Ack'
+        "204":
+          description: No Content
+      summary: Delete a message
+      tags:
+      - messages
+      - messages
+      - messages
+  /operations/{trace_id}:
+    get:
+      parameters:
+      - description: Trace ID
+        in: path
+        name: trace_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Ack'
+        "204":
+          description: No Content
+          schema:
+            type: string
+      summary: Get operation status
+      tags:
+      - operations
+swagger: "2.0"

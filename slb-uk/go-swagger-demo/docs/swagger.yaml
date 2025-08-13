@@ -1,0 +1,169 @@
+basePath: /v1
+definitions:
+  main.Message:
+    properties:
+      id:
+        example: 1
+        type: integer
+      message:
+        example: hello world
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@example.com
+    name: API Support
+    url: https://example.com/support
+  description: A simple demo API documented with Swagger 2.0 annotations.
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: https://example.com/terms
+  title: Messages API
+  version: "1.0"
+paths:
+  /hello:
+    get:
+      description: Returns a friendly welcome message.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Welcome
+      tags:
+      - misc
+  /message:
+    post:
+      consumes:
+      - application/json
+      description: Create and store a new message.
+      parameters:
+      - description: Message payload (ID optional)
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/main.Message'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/main.Message'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create message
+      tags:
+      - messages
+  /message/{id}:
+    delete:
+      description: Delete message by ID.
+      parameters:
+      - description: Message ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete message
+      tags:
+      - messages
+    get:
+      description: Get a single message by its ID.
+      parameters:
+      - description: Message ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Message'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get message by ID
+      tags:
+      - messages
+    put:
+      consumes:
+      - application/json
+      description: Update message by ID.
+      parameters:
+      - description: Message ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Message payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/main.Message'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Message'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update message
+      tags:
+      - messages
+  /messages:
+    get:
+      description: Get all messages from store.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/main.Message'
+            type: array
+      summary: List messages
+      tags:
+      - messages
+swagger: "2.0"
