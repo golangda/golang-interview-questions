@@ -1,0 +1,54 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "panels": [
+    {
+      "type": "graph",
+      "title": "Step 5 Retry Rate",
+      "targets": [
+        {
+          "expr": "sum(rate(saga_retries_total{step=\"5\"}[1m]))",
+          "legendFormat": "{{reason}}"
+        }
+      ],
+      "id": 1
+    },
+    {
+      "type": "graph",
+      "title": "Step 5 p95 Latency",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(saga_step_latency_seconds_bucket{step=\"5\"}[5m])) by (le))",
+          "legendFormat": "p95"
+        }
+      ],
+      "id": 2
+    },
+    {
+      "type": "graph",
+      "title": "DLQ Rate",
+      "targets": [
+        {
+          "expr": "sum(rate(dlq_messages_total[1m]))",
+          "legendFormat": "dlq"
+        }
+      ],
+      "id": 3
+    },
+    {
+      "type": "graph",
+      "title": "Saga Funnel Completion",
+      "targets": [
+        {
+          "expr": "sum(rate(saga_step_latency_seconds_count[5m])) by (step)",
+          "legendFormat": "step {{step}}"
+        }
+      ],
+      "id": 4
+    }
+  ],
+  "schemaVersion": 27,
+  "title": "SAGA Lab Dashboard",
+  "version": 1
+}

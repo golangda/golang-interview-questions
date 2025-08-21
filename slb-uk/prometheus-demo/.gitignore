@@ -1,0 +1,12 @@
+# binaries
+*.exe
+*.dll
+*.so
+*.dylib
+prom-demo
+# build
+bin/
+dist/
+# editor
+.vscode/
+.idea/

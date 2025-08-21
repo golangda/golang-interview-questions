@@ -1,0 +1,11 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: saga-services
+spec:
+  selector:
+    matchLabels:
+      saga-metrics: "true"
+  endpoints:
+  - port: metrics
+    interval: 15s

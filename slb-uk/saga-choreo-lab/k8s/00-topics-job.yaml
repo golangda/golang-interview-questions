@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kafka-create-topics
+spec:
+  backoffLimit: 1
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: kt
+        image: bitnami/kafka:latest
+        command: ["/bin/bash","-lc"]
+        args:
+        - |
+          set -e
+          broker=kafka:9092
+          for t in saga.step1 saga.step1.completed saga.step2.completed saga.step3.completed saga.step4.completed saga.step5.completed saga.dlq; do
+            /opt/bitnami/kafka/bin/kafka-topics.sh --create --if-not-exists --topic $t --bootstrap-server $broker --partitions 3 --replication-factor 1 || true
+          done

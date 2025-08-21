@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dlq-replayer
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: dlq-replayer }
+  template:
+    metadata:
+      labels: { app: dlq-replayer }
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+    spec:
+      containers:
+      - name: dlq-replayer
+        image: saga/dlq-replayer:dev
+        imagePullPolicy: IfNotPresent
+        ports: [{containerPort: 8080, name: metrics}]
+        env:
+        - { name: KAFKA_BROKERS, value: "kafka:9092" }
+        - { name: GROUP_ID, value: "dlq-replayer" }
+        - { name: DLQ_TOPIC, value: "saga.dlq" }
+        - { name: REPLAY_TARGET, value: "saga.step4.completed" }
+        - { name: JAEGER_COLLECTOR, value: "http://jaeger-collector:14268/api/traces" }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dlq-replayer
+  labels:
+    app: dlq-replayer
+    saga-metrics: "true"
+spec:
+  selector: { app: dlq-replayer }
+  ports: [{ name: metrics, port: 8080, targetPort: 8080 }]

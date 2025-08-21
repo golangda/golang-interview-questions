@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: emitter
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: emitter }
+  template:
+    metadata:
+      labels: { app: emitter }
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+    spec:
+      containers:
+      - name: emitter
+        image: saga/emitter:dev
+        imagePullPolicy: IfNotPresent
+        ports: [{containerPort: 8080, name: metrics}]
+        env:
+        - { name: KAFKA_BROKERS, value: "kafka:9092" }
+        - { name: TOPIC_OUT, value: "saga.step1" }
+        - { name: EMIT_EVERY_MS, value: "1000" }
+        - { name: JAEGER_COLLECTOR, value: "http://jaeger-collector:14268/api/traces" }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: emitter
+  labels:
+    app: emitter
+    saga-metrics: "true"
+spec:
+  selector: { app: emitter }
+  ports: [{ name: metrics, port: 8080, targetPort: 8080 }]

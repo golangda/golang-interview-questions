@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: step2
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: step2 }
+  template:
+    metadata:
+      labels: { app: step2 }
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+    spec:
+      containers:
+      - name: step2
+        image: saga/step2:dev
+        imagePullPolicy: IfNotPresent
+        ports: [{containerPort: 8080, name: metrics}]
+        env:
+        - name: KAFKA_BROKERS
+          value: "kafka:9092"
+        - name: GROUP_ID
+          value: "svc2-group"
+        - name: TOPIC_IN
+          value: "saga.step1.completed"
+        - name: TOPIC_OUT
+          value: "saga.step2.completed"
+        - name: DLQ_TOPIC
+          value: "saga.dlq"
+        - name: STEP
+          value: "2"
+        - name: JAEGER_COLLECTOR
+          value: "http://jaeger-collector:14268/api/traces"
+        readinessProbe:
+          httpGet: { path: /metrics, port: 8080 }
+          initialDelaySeconds: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: step2
+  labels:
+    app: step2
+    saga-metrics: "true"
+spec:
+  selector: { app: step2 }
+  ports:
+  - name: metrics
+    port: 8080
+    targetPort: 8080
